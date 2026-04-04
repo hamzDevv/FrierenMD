@@ -8,6 +8,9 @@ import pino from "pino";
 import { global } from "./settings.js";
 import fs from "fs";
 
+import { loadPlugins, handleCommand } from "./system/handler.js";
+
+await loadPlugins();
 const logger = pino({ level: "silent" });
 
 async function connectToWhatsapp() {
@@ -22,7 +25,7 @@ async function connectToWhatsapp() {
         },
         logger,
         printQRInTerminal: false,
-        browser: ["Ubuntu", "Chrome", "20.0.04"],
+        browser: ["Linux", "Chrome", "20.0.04"],
         markOnlineOnConnect: true,
         generateHighQualityLinkPreview: true,
         syncFullHistory: false
@@ -43,7 +46,10 @@ async function connectToWhatsapp() {
                 console.log("Sedang meminta pairing code...");
                 await new Promise(res => setTimeout(res, 6000));
 
-                const code = await ham.requestPairingCode(phoneNumber);
+                const code = await ham.requestPairingCode(
+                    phoneNumber,
+                    "FRIERENN"
+                );
                 console.log("==============================");
                 console.log("PAIRING CODE ANDA:", code);
                 console.log("==============================");
@@ -95,6 +101,35 @@ async function connectToWhatsapp() {
                 }, 5000);
             }
         }
+    });
+
+    ham.ev.on("messages.upsert", async ({ messages }) => {
+        const msg = messages[0];
+        const user = msg.pushName;
+        const from = msg.key.remoteJid;
+        const text =
+            msg.message?.conversation || msg.message?.extendedTextMessage?.text;
+        if (!text) return;
+
+        const isGroup = msg.key.remoteJid.endsWith("@g.us");
+        const prefix = global.prefix;
+        const args = text.slice(prefix.length).split(" ");
+        const cmd = args.shift().toLowerCase();
+        const query = args.join(" ");
+
+        if (!text.startsWith(prefix)) return;
+
+        await handleCommand({ ham, from, user, cmd, query, msg });
+
+        const mode = isGroup ? "OnGroup" : "Private";
+
+        const anu = `
+Dari: ${user}
+Pesan: ${text}
+Mode: ${mode}
+`;
+
+        console.log(anu);
     });
 }
 
