@@ -17,6 +17,7 @@ export const handler = async ({ ham, from, user }) => {
 ╭➣ *『 Owner Menu 』*
 │ • .self
 │ • .public
+│ • .rvo
 ╰━━━━━━━━━━━━━━━━━╯ 
 
 ╭➣ *『 Main Menu 』*

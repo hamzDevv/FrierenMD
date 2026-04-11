@@ -23,13 +23,13 @@ export const loadPlugins = async () => {
     console.log("Total Plugin:", plugins.length);
 };
 
-export const handleCommand = async ({ ham, from, user, cmd, query }) => {
+export const handleCommand = async datas => {
     for (let plugin of plugins) {
         if (!plugin.cmd) continue;
 
-        if (plugin.cmd.includes(cmd)) {
+        if (plugin.cmd.includes(datas.cmd)) {
             try {
-                plugin.handler({ ham, from, user, query});
+                plugin.handler(datas);
             } catch (err) {
                 throw new Error(err);
             }

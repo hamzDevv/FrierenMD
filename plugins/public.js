@@ -2,7 +2,11 @@ import { global } from "../settings.js";
 
 export const cmd = ["public"];
 
-export const handler = async ({ ham, from }) => {
+export const handler = async ({ ham, from, isOwner }) => {
+  if(!isOwner) {
+    return ham.sendMessage(from, {text: "lah lu siapa cik ngatur' gw?"})
+  }
+  
     if (!global.self) {
         return ham.sendMessage(from, { text: "ini udh public jir_-" });
     }
