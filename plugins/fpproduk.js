@@ -23,10 +23,11 @@ export const handler = async ({ ham, from, query }) => {
 
     let text = `[${result.length} Produk Tersedia]\n`;
     result.forEach((r, i) => {
+        const price = new Intl.NumberFormat("id-ID").format(r.price);
         text += `
 ID: ${r.id}
 Nama: ${r.name}
-Harga: ${r.price}/K
+Harga: Rp${price}/K
 Min ${r.min} || Max ${r.max}
 Refill: ${r.refill}
 `;

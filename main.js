@@ -9,7 +9,6 @@ import { global } from "./settings.js";
 import fs from "fs";
 
 import { loadPlugins, handleCommand } from "./system/handler.js";
-import { helper } from "./system/helper.js";
 
 const dbMF = "./database/menfess.json";
 const loadMF = () => JSON.parse(fs.readFileSync(dbMF));
@@ -157,9 +156,8 @@ async function connectToWhatsapp() {
         const quoted =
             msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
 
-        // if (!text.startsWith(prefix) || (isSelf && !isOwner)) return;
+         if (!text.startsWith(prefix) || (isSelf && !isOwner)) return;
 
-        helper({ msg });
         await handleCommand({
             ham,
             msg,

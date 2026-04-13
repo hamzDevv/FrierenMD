@@ -19,9 +19,8 @@ export const handler = async ({ ham, from, query }) => {
         text = `${data.msg}
 
 ID: ${data.order_id}
-Di Isi: ${data.charge}
+Di Isi: ${data.remains}
 Jumlah Awal: ${data.start_count}
-Sisa: ${data.remains}
 Status: ${data.order_status}
   `;
     } catch (err) {

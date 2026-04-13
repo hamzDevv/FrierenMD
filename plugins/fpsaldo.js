@@ -12,7 +12,9 @@ export const handler = async ({ ham, from, isOwner }) => {
         api_key: global.fpApiKey
     });
 
-    const text = `saldonya sisa ${data.balance} :v`;
+    const saldo = new Intl.NumberFormat("id-ID").format(data.balance);
+
+    const text = `saldonya sisa Rp${saldo} :v`;
 
     await ham.sendMessage(from, { text });
 };
