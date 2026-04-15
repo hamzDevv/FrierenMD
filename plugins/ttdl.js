@@ -11,19 +11,15 @@ export const handler = async ({ ham, from, query }) => {
 
     try {
         const { data } = await axios.get(
-            `https://api.beraknew.web.id/api/download/tiktok?url=${query}`
+            `https://api-varhad.my.id/download/tt?url=${query}`
         );
 
-        const video = data.data.links?.find(n =>
-            n.name.toLowerCase().includes("video")
-        )?.url;
-        const audio = data.data.links?.find(n =>
-            n.name.toLowerCase().includes("mp3")
-        )?.url;
+        const video = data.result.mp4_hd
+        const audio = data.result.mp3
         const caption = `
-[ ${data.data.author} ]
+[ Tiktok Downloader ]
 
-${data.data.title}
+${data.result.title}
 
 > FrierenMD
 `;

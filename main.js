@@ -156,7 +156,7 @@ async function connectToWhatsapp() {
         const quoted =
             msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
 
-         if (!text.startsWith(prefix) || (isSelf && !isOwner)) return;
+        if (!text.startsWith(prefix) || (isSelf && !isOwner)) return;
 
         await handleCommand({
             ham,
@@ -168,7 +168,8 @@ async function connectToWhatsapp() {
             isOwner,
             isGroup,
             isSelf,
-            quoted
+            quoted,
+            sender
         });
 
         const mode = isGroup ? "Group" : "Private";

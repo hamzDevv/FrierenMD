@@ -8,7 +8,7 @@ export const handler = async ({ ham, from, query }) => {
     }
 
     const { data } = await axios.get(
-        `https://api.beraknew.web.id/api/maker/brat?text=${query}`,
+        `https://api-varhad.my.id/maker/brat?text=${query}`,
         {
             responseType: "arraybuffer"
         }
