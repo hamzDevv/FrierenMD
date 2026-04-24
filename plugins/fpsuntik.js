@@ -10,6 +10,8 @@ export const handler = async ({ ham, from, query, sender }) => {
             text: "gini woe: .fpsuntik id|target|jumlah\nbtw kalo mau cari id nya ketik .fpproduk tiktok followers (misal)"
         });
     }
+    
+    const fee = 2500
 
     const [service, target, quantity] = query.split("|");
 
@@ -61,7 +63,7 @@ export const handler = async ({ ham, from, query, sender }) => {
 
     const pricePer1000 = produk.price;
     const qty = Number(quantity);
-    const total = Math.ceil((qty / 1000) * pricePer1000);
+    const total = Math.ceil((qty / 1000) * pricePer1000 + fee);
     const rupiah = n => new Intl.NumberFormat("id-ID").format(n || 0);
 
     if (user.saldo < total) {

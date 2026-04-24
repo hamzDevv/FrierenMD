@@ -69,22 +69,30 @@ export const handler = async ({ ham, from, query, sender }) => {
             .update({ status: "success", trx_with: data.issuer })
             .eq("trx_id", trxId);
 
+        const { data: newUser } = await supabase
+            .from("users")
+            .select("*")
+            .eq("jid", sender)
+            .single();
+
         const rupiah = n => new Intl.NumberFormat("id-ID").format(n || 0);
 
         const text = `Pembayaran Berhasil:
     
-Metode: ${data.type}
-Dibayar Dengan: ${data.issuer}
-Jumlah: ${rupiah(data.amount)}
-Status: ${data.status}
+Metode: ${data.type || "—"}
+Dibayar Dengan: ${data.issuer || "—"}
+Jumlah: ${rupiah(data.amount || trx.amount)}
+Status: ${data.status || "success"}
 
-Total Saldo Kamu: Rp${user.saldo}
+Total Saldo Kamu: Rp${newUser.saldo}
 
 > FrierenMD`;
 
         return await ham.sendMessage(from, { text });
     } catch (err) {
-      console.log(err)
-        ham.sendMessage(from, { text: "terjadi kesalahan wok" });
+        console.log(err);
+        ham.sendMessage(from, {
+            text: "terjadi kesalahan wok coba ulang lagi"
+        });
     }
 };

@@ -9,5 +9,5 @@ export const handler = async ({ham, from, query}) => {
   
   const {data} = await axios.get(`https://api-varhad.my.id/download/ytmp3?url=${query}`)
   
-  await ham.sendMessage(from, {audio: {url: data.download}, mimetype: "audio/mpeg"})
+  await ham.sendMessage(from, {audio: {url: data.result.download}, mimetype: "audio/mpeg"})
 }

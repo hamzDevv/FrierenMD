@@ -7,6 +7,7 @@ import makeWASocket, {
 import pino from "pino";
 import { global } from "./settings.js";
 import fs from "fs";
+import util from "util";
 
 import { loadPlugins, handleCommand } from "./system/handler.js";
 
@@ -109,6 +110,14 @@ async function connectToWhatsapp() {
 
     ham.ev.on("messages.upsert", async ({ messages }) => {
         const msg = messages[0];
+        console.log(
+            util.inspect(msg, {
+                depth: null,
+                maxArrayLength: null,
+                maxStringLength: null,
+                colors: true
+            })
+        );
         if (msg.key.fromMe) return;
         const user = msg.pushName;
         const from = msg.key.remoteJid || msg.key.participant;
@@ -155,6 +164,27 @@ async function connectToWhatsapp() {
         const isSelf = global.self;
         const quoted =
             msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+        const gmd = await ham.groupMetadata(from);
+
+        if (isOwner && text.startsWith("$")) {
+            const code = text.slice(1).trim();
+
+            try {
+                let result = await eval(`(async () => { ${code} })()`);
+
+                if (result === undefined) return;
+
+                if (typeof result !== "string") {
+                    result = util.inspect(result, { depth: null });
+                }
+
+                await ham.sendMessage(from, { text: result });
+            } catch (err) {
+                await ham.sendMessage(from, { text: err.toString() });
+            }
+
+            return;
+        }
 
         if (!text.startsWith(prefix) || (isSelf && !isOwner)) return;
 
