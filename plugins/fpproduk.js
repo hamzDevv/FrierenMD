@@ -3,12 +3,13 @@ import { global } from "../settings.js";
 
 export const cmd = ["fpproduk"];
 
-export const handler = async ({ ham, from, query }) => {
+export const handler = async ({ ham, from, query, isOwner }) => {
     if (!query) {
         return ham.sendMessage(from, { text: "mau cari apa kink" });
     }
     
-    const fee = 2500 // buwat ngambil untung yakali jualan gada untung wkwkwk 
+    let fee = 2500 // buwat ngambil untung yakali jualan gada untung wkwkwk 
+    if(isOwner) fee = 0
 
     const { data } = await axios.post("https://fayupedia.id/api/services", {
         api_id: global.fpApiID,

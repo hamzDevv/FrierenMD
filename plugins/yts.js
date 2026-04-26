@@ -12,9 +12,9 @@ export const handler = async ({ ham, from, query }) => {
     );
 
     const result = data.result;
-    let text = "";
+    let text = "hmm keknya error deh :v";
     result.map((r, i) => {
-        text += `Title: ${r.title}
+        text = `Title: ${r.title}
 Channel: ${r.channel}
 Duration: ${r.duration}
 Link: ${r.link}

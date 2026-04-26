@@ -3,12 +3,15 @@ import { global } from "../settings.js";
 
 export const cmd = ["fpharga"];
 
-export const handler = async ({ ham, from, query }) => {
+export const handler = async ({ ham, from, query, isOwner }) => {
     if (!query.includes("|")) {
         return ham.sendMessage(from, {
             text: "harga apanya jink_-"
         });
     }
+
+    let fee = 2500;
+    if (isOwner) fee = 0;
 
     const [id, jumlah] = query.split("|");
 
@@ -30,7 +33,7 @@ export const handler = async ({ ham, from, query }) => {
     const rupiah = number => new Intl.NumberFormat("id-ID").format(number);
 
     const pricePer1000 = service.price;
-    const total = Math.ceil((qty / 1000) * pricePer1000);
+    const total = Math.ceil((qty / 1000) * pricePer1000 + fee);
 
     const text = `${service.name}
 

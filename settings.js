@@ -3,7 +3,7 @@ export const global = {
     prefix: ".",
     self: true,
     owner: "628xxxxxxxxxx@s.whatsapp.net", // @s.whatsapp.net nya jangan diilangin wok
-    developer: "HamPkeJett", // klo bisa jangan dihapus yah wok untuk menghargai akuh :v klo di hpus juga gapapa si :<
+    developer: "hamjett", // klo bisa jangan dihapus yah wok untuk menghargai akuh :v klo di hpus juga gapapa si :<
     bot: "FrierenMD",
     version: 1.0,
     supabaseUrl: "", // supabase yuerel

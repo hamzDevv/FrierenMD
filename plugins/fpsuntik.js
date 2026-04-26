@@ -4,14 +4,15 @@ import { global } from "../settings.js";
 
 export const cmd = ["fpsuntik"];
 
-export const handler = async ({ ham, from, query, sender }) => {
+export const handler = async ({ ham, from, query, sender, isOwner }) => {
     if (!query) {
         return ham.sendMessage(from, {
             text: "gini woe: .fpsuntik id|target|jumlah\nbtw kalo mau cari id nya ketik .fpproduk tiktok followers (misal)"
         });
     }
-    
-    const fee = 2500
+
+    let fee = 2500;
+    if(isOwner) fee = 0
 
     const [service, target, quantity] = query.split("|");
 

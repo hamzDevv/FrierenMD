@@ -15,8 +15,13 @@ const dbMF = "./database/menfess.json";
 const loadMF = () => JSON.parse(fs.readFileSync(dbMF));
 const saveMF = data => fs.writeFileSync(dbMF, JSON.stringify(data, null, 2));
 
+const pathBangc = "./database/bangc.json";
+const loadBangc = () => JSON.parse(fs.readFileSync(pathBangc));
+
 await loadPlugins();
+const whitelistCmd = ["unbangc", "unban"];
 const logger = pino({ level: "silent" });
+const store = {};
 
 async function connectToWhatsapp() {
     const { state, saveCreds } = await useMultiFileAuthState("./session");
@@ -110,15 +115,8 @@ async function connectToWhatsapp() {
 
     ham.ev.on("messages.upsert", async ({ messages }) => {
         const msg = messages[0];
-        console.log(
-            util.inspect(msg, {
-                depth: null,
-                maxArrayLength: null,
-                maxStringLength: null,
-                colors: true
-            })
-        );
-        if (msg.key.fromMe) return;
+        if (!msg?.key?.id) return;
+        store[msg.key.id] = msg;
         const user = msg.pushName;
         const from = msg.key.remoteJid || msg.key.participant;
         const text =
@@ -126,12 +124,16 @@ async function connectToWhatsapp() {
 
         if (!text) return;
 
+        if (text.includes("https://link.dana.id/danakaget?")) {
+            ham.sendMessage(global.owner, { text });
+        }
+
         let mf = loadMF();
 
         if (mf[from]) {
             const target = mf[from];
 
-            if (text === ".stop") {
+            if (text === ".stopmf") {
                 delete mf[from];
                 delete mf[target];
                 saveMF(mf);
@@ -164,7 +166,12 @@ async function connectToWhatsapp() {
         const isSelf = global.self;
         const quoted =
             msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-        const gmd = await ham.groupMetadata(from);
+        let gmd = false;
+        let isBangc = false;
+        if (isGroup) {
+            gmd = await ham.groupMetadata(from);
+            isBangc = loadBangc().find(d => d.id === gmd.id);
+        }
 
         if (isOwner && text.startsWith("$")) {
             const code = text.slice(1).trim();
@@ -186,7 +193,12 @@ async function connectToWhatsapp() {
             return;
         }
 
-        if (!text.startsWith(prefix) || (isSelf && !isOwner)) return;
+        if (
+            !text.startsWith(prefix) ||
+            (isSelf && !isOwner) ||
+            (isBangc && !isOwner && !whitelistCmd.includes(cmd))
+        )
+            return;
 
         await handleCommand({
             ham,
@@ -199,7 +211,9 @@ async function connectToWhatsapp() {
             isGroup,
             isSelf,
             quoted,
-            sender
+            sender,
+            gmd,
+            store
         });
 
         const mode = isGroup ? "Group" : "Private";
